@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -64,7 +65,7 @@ app.use(express.static(path.join(__dirname, '../organizer-app/build')));
 
 // Handle all other routes by serving the React app
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../organizer-app/build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../organizer-app',build, 'index.html'));
 });
 
 // Routes
