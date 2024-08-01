@@ -1,5 +1,3 @@
-const vapidPublicKey = process.env.REACT_APP_PUBLIC_VAPID_KEY;
-
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -25,7 +23,7 @@ export const subscribeUser = async () => {
 
       const newSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+        applicationServerKey: urlBase64ToUint8Array('BA36MmQvZeXCN6SoOkl5JeSVK0ADziCwPOEINUasNfAGOh10wV3CoqHVx7dZBuYQY4TsC_k578Ro3W4djca2GFs')
       });
 
       const pushSubscription = {

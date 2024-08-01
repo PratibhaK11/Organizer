@@ -21,10 +21,12 @@ const Tasks = () => {
       setLoading(true);
       try {
         const res = await axios.get('/api/tasks');
-        setTasks(res.data.tasks);
+        console.log('Fetched tasks:', res.data); // Log the response
+        setTasks(res.data.tasks || []); // Ensure an empty array if no tasks
         setError(null); // Clear any previous errors
       } catch (err) {
         setError('Failed to load tasks. Please try again later.');
+        console.error('Error fetching tasks:', err); // Log the error
         console.error(err);
       } finally {
         setLoading(false);
@@ -32,7 +34,7 @@ const Tasks = () => {
     };
 
     fetchTasks();
-    
+
     if (user) {
       subscribeUser().catch(err => {
         console.error('Subscription error:', err);

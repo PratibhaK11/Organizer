@@ -45,9 +45,12 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
           categories,
           alarm
         });
-        setTasks(prevTasks => prevTasks.map(task =>
-          task._id === editingTask._id ? { ...task, title, description, dueDate, priority, status, categories, alarm } : task
-        ));
+        setTasks(prevTasks => {
+          if (!prevTasks) return []; // Ensure prevTasks is defined
+          return prevTasks.map(task =>
+            task._id === editingTask._id ? { ...task, title, description, dueDate, priority, status, categories, alarm } : task
+          );
+        });
         setEditingTask(null); // Clear editing task
       } else {
         // Add new task
@@ -60,7 +63,10 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
           categories,
           alarm
         });
-        setTasks(prevTasks => [...prevTasks, response.data.task]);
+        setTasks(prevTasks => {
+          if (!prevTasks) return []; // Ensure prevTasks is defined
+          return [...prevTasks, response.data.task];
+        });
       }
       // Reset form
       setTitle('');
