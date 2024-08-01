@@ -59,6 +59,10 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
+// Routes
+app.use('/api/users', require('./routes/users'));
+app.use('/api/tasks', require('./routes/tasks'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../organizer-app/build')));
@@ -67,12 +71,6 @@ app.use(express.static(path.join(__dirname, '../organizer-app/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../organizer-app','build', 'index.html'));
 });
-
-// Routes
-app.use('/api/users', require('./routes/users'));
-app.use('/api/tasks', require('./routes/tasks'));
-app.use('/api/notifications', require('./routes/notifications'));
-
 // Start server
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
