@@ -59,6 +59,14 @@ app.use(cors({
   credentials: true
 }));
 
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/organizer-client/build')));
+
+// Handle all other routes by serving the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/organizer-client/build', 'index.html'));
+});
+
 // Routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/tasks', require('./routes/tasks'));
