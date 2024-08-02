@@ -22,7 +22,7 @@ const UserMenu = () => {
     <div className="relative">
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-black-500 text-white px-4 py-2 rounded"
       >
         {user.name}
       </button>

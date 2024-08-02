@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
@@ -11,6 +11,18 @@ const Register = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Clear cookies when the component mounts
+    const clearCookies = async () => {
+      try {
+        await fetch('/api/clear-cookies', { method: 'POST', credentials: 'include' });
+      } catch (err) {
+        console.error('Error clearing cookies:', err);
+      }
+    };
+    clearCookies();
+  }, []);
 
   const validateForm = () => {
     if (!name || !email || !password || !password2) {
@@ -40,7 +52,7 @@ const Register = () => {
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       setError(err.response ? err.response.data : 'An error occurred. Please try again.');
-      console.error(err);
+      console.error('Registration error:', err.response ? err.response.data : err.message);
     }
   };
 

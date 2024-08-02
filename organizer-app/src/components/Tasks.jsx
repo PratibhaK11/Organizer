@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import axios from 'axios';
 import { subscribeUser } from '../utils/subscribe';
 import { AuthContext } from '../context/AuthContext';
@@ -27,7 +27,6 @@ const Tasks = () => {
       } catch (err) {
         setError('Failed to load tasks. Please try again later.');
         console.error('Error fetching tasks:', err); // Log the error
-        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -48,11 +47,10 @@ const Tasks = () => {
     setError(null);
     try {
       await axios.delete(`/api/tasks/${id}`);
-      setTasks(tasks.filter((task) => task._id !== id));
-      setError(null);
+      setTasks(prevTasks => prevTasks.filter((task) => task._id !== id));
     } catch (err) {
       setError('Failed to delete task. Please try again later.');
-      console.error(err);
+      console.error('Error deleting task:', err);
     } finally {
       setLoading(false);
     }
@@ -68,30 +66,37 @@ const Tasks = () => {
     setError(null);
     try {
       await axios.patch(`/api/tasks/${id}`, { status: 'Completed' });
-      setTasks(tasks.map(task => (task._id === id ? { ...task, status: 'Completed' } : task)));
-      setError(null);
+      setTasks(prevTasks => 
+        prevTasks.map(task => (task._id === id ? { ...task, status: 'Completed' } : task))
+      );
     } catch (err) {
       setError('Failed to mark task as completed. Please try again later.');
-      console.error(err);
+      console.error('Error marking task as completed:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Sort tasks with pending tasks first and completed tasks last
-  const sortedTasks = tasks.sort((a, b) => {
-    if (a.status === 'Completed' && b.status !== 'Completed') return 1;
-    if (a.status !== 'Completed' && b.status === 'Completed') return -1;
-    return 0;
-  });
+  const sortedTasks = useMemo(() => {
+    return tasks.sort((a, b) => {
+      if (a.status === 'Completed' && b.status !== 'Completed') return 1;
+      if (a.status !== 'Completed' && b.status === 'Completed') return -1;
+      return 0;
+    });
+  }, [tasks]);
 
-  // Filter tasks based on priority
-  const filteredTasks = sortedTasks.filter(task => 
-    filterPriority === 'all' || task.priority === filterPriority
-  );
+  const filteredTasks = useMemo(() => {
+    return sortedTasks.filter(task => 
+      filterPriority === 'all' || task.priority === filterPriority
+    );
+  }, [sortedTasks, filterPriority]);
 
   const handleEditClick = (task) => {
     setEditingTask(task);
+  };
+
+  const handleFilterClick = () => {
+    setFilterPriority(prev => prev === 'all' ? 'high' : 'all');
   };
 
   return (
@@ -109,7 +114,7 @@ const Tasks = () => {
         </div>
 
         {/* Tasks List Section */}
-        <div className="flex-1 p-6 bg-gray-200 overflow-y-auto">
+        <div className="flex-1 p-6 bg-white-200 overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold">Tasks</h2>
             <div className="flex items-center space-x-4">
@@ -117,7 +122,7 @@ const Tasks = () => {
                 <strong>Pending Tasks:</strong> {filteredTasks.filter(task => task.status === 'Not Started').length}
               </p>
               <button
-                onClick={() => setFilterPriority(filterPriority === 'all' ? 'high' : 'all')}
+                onClick={handleFilterClick}
                 className="flex items-center bg-gray-300 p-2 rounded"
               >
                 <FaFilter className="mr-2" />
@@ -151,13 +156,13 @@ const Tasks = () => {
                       </button>
                       <button
                         onClick={() => deleteTask(task._id)}
-                        className="bg-red-500 text-white p-2 rounded"
+                        className="bg-orangered-500 text-white p-2 rounded"
                       >
                         <FaTrash />
                       </button>
                       <button
                         onClick={() => handleEditClick(task)}
-                        className="bg-blue-500 text-white p-2 rounded"
+                        className="bg-black-500 text-white p-2 rounded"
                       >
                         <FaEdit />
                       </button>

@@ -9,6 +9,7 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
   const [status, setStatus] = useState('Not Started');
   const [categories, setCategories] = useState([]);
   const [alarm, setAlarm] = useState(false);
+  const [error, setError] = useState(null); // Added error state
 
   useEffect(() => {
     if (editingTask) {
@@ -17,19 +18,24 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
       setDueDate(editingTask.dueDate);
       setPriority(editingTask.priority);
       setStatus(editingTask.status);
-      setCategories(editingTask.categories);
-      setAlarm(editingTask.alarm);
+      setCategories(editingTask.categories || []); // Ensure categories is an array
+      setAlarm(editingTask.alarm || false); // Default to false if not provided
     } else {
       // Clear the form if no task is being edited
-      setTitle('');
-      setDescription('');
-      setDueDate('');
-      setPriority('low');
-      setStatus('Not Started');
-      setCategories([]);
-      setAlarm(false);
+      resetForm();
     }
   }, [editingTask]);
+
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setDueDate('');
+    setPriority('low');
+    setStatus('Not Started');
+    setCategories([]);
+    setAlarm(false);
+    setError(null); // Clear any previous errors
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,12 +51,11 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
           categories,
           alarm
         });
-        setTasks(prevTasks => {
-          if (!prevTasks) return []; // Ensure prevTasks is defined
-          return prevTasks.map(task =>
+        setTasks(prevTasks => 
+          prevTasks.map(task => 
             task._id === editingTask._id ? { ...task, title, description, dueDate, priority, status, categories, alarm } : task
-          );
-        });
+          )
+        );
         setEditingTask(null); // Clear editing task
       } else {
         // Add new task
@@ -63,20 +68,12 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
           categories,
           alarm
         });
-        setTasks(prevTasks => {
-          if (!prevTasks) return []; // Ensure prevTasks is defined
-          return [...prevTasks, response.data.task];
-        });
+        setTasks(prevTasks => [...prevTasks, response.data.task]);
       }
       // Reset form
-      setTitle('');
-      setDescription('');
-      setDueDate('');
-      setPriority('low');
-      setStatus('Not Started');
-      setCategories([]);
-      setAlarm(false);
+      resetForm();
     } catch (error) {
+      setError('Error saving task. Please try again.'); // Set error message
       console.error('Error saving task:', error);
     }
   };
@@ -86,6 +83,7 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
       <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
         {editingTask ? 'Edit Task' : 'New Task'}
       </h2>
+      {error && <p className="text-red-500 mb-4">{error}</p>} {/* Display error message */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-col mb-4">
           <label htmlFor="title" className="font-medium text-gray-700 dark:text-gray-300 mb-2">Title</label>
@@ -158,7 +156,7 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
             type="text"
             id="categories"
             value={categories.join(', ')}
-            onChange={(e) => setCategories(e.target.value.split(',').map(cat => cat.trim()))}
+            onChange={(e) => setCategories(e.target.value.split(',').map(cat => cat.trim()).filter(cat => cat))}
             placeholder="Enter categories, separated by commas"
             className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           />

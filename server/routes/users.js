@@ -1,10 +1,14 @@
-// routes/users.js
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const User = require('../models/User');
+
+// Utility function to clear cookies
+const clearCookies = (res) => {
+  res.clearCookie('connect.sid'); // Clear session cookie
+  // Add other cookies to clear if needed
+};
 
 // Register
 router.post('/register', async (req, res) => {
@@ -37,6 +41,7 @@ router.post('/register', async (req, res) => {
     newUser.password = await bcrypt.hash(password, 10);
 
     await newUser.save();
+    clearCookies(res); // Clear cookies on registration
     res.status(201).json({ user: newUser });
   } catch (err) {
     console.error('Error registering user:', err);
@@ -49,8 +54,10 @@ router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) return next(err);
     if (!user) return res.status(400).json({ msg: info.message });
+
     req.logIn(user, err => {
       if (err) return next(err);
+      clearCookies(res); // Clear cookies on login
       res.status(200).json({ user });
     });
   })(req, res, next);
@@ -70,7 +77,7 @@ router.get('/logout', async (req, res, next) => {
         if (err) return next(err);
 
         // Clear cookies
-        res.clearCookie('connect.sid');
+        clearCookies(res);
 
         res.status(200).json({ message: 'Logged out successfully' });
       });

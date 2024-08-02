@@ -6,6 +6,7 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const path = require('path');
 const cors = require('cors');
+const clearCookiesRouter = require('./routes/clearCookies');
 const cron = require('./cron/cron');
 
 const app = express();
@@ -61,6 +62,7 @@ app.use(cors({
 }));
 // Routes
 app.use('/api/users', require('./routes/users'));
+app.use('/api', clearCookiesRouter);
 app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/notifications', require('./routes/notifications'));
 

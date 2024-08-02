@@ -19,7 +19,7 @@ const Navbar = ({ tasks, setTasks }) => {
   };
 
   return (
-    <nav className="sticky top-0 left-0 right-0 bg-gray-800 text-white p-4 flex justify-between items-center shadow-lg z-50">
+    <nav className="sticky top-0 left-0 right-0 bg-orangered-800 text-white p-4 flex justify-between items-center shadow-lg z-50">
       <div className="text-2xl font-semibold">
         <a href="/" className="hover:text-gray-400">Organizer</a>
       </div>

@@ -1,14 +1,27 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { subscribeUser } from '../utils/subscribe'; // Import the subscribeUser function
+import { subscribeUser } from '../utils/subscribe';
 
 const Login = () => {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Clear cookies when the component mounts
+    const clearCookies = async () => {
+      try {
+        await fetch('/api/clear-cookies', { method: 'POST', credentials: 'include' });
+      } catch (err) {
+        console.error('Error clearing cookies:', err);
+      }
+    };
+    clearCookies();
+  }, []);
 
   const validateForm = () => {
     if (!email || !password) {
@@ -25,13 +38,16 @@ const Login = () => {
       return;
     }
     setError('');
+    setLoading(true);
     try {
       await login(email, password);
-      subscribeUser(); // Call the subscribeUser function after login
-      navigate('/tasks'); // Redirect to tasks page after successful login
+      await subscribeUser();
+      navigate('/tasks');
     } catch (err) {
-      setError(err.response ? err.response.data : err.message);
+      setError(err.response ? err.response.data : 'Login failed. Please try again.');
       console.error('Login error:', err.response ? err.response.data : err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,9 +85,10 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
+            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
         <p className="text-center text-gray-600 mt-6">
