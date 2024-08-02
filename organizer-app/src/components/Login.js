@@ -85,11 +85,13 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            style={{ backgroundColor: 'black' }}
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
+
         </form>
         <p className="text-center text-gray-600 mt-6">
           Don't have an account?{' '}

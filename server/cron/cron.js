@@ -6,17 +6,16 @@ const User = require('../models/User');
 // Function to send reminders
 const sendReminders = async () => {
   const now = new Date();
-  const reminderWindowStart = new Date(now.getTime() + 1 * 60 * 1000); // 1 min from now
-
-  // Log current time and reminder window for debugging
   console.log(`Current time (UTC): ${now.toISOString()}`);
-  console.log(`Reminder window start (UTC): ${reminderWindowStart.toISOString()}`);
 
+  // Reinitialize `now` to avoid side effects
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+  
   try {
-    // Define the start and end of the current day
-    const startOfDay = new Date(now.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(now.setHours(23, 59, 59, 999));
-
     // Find tasks due today with alarm set
     const tasks = await Task.find({
       dueDate: { $gte: startOfDay, $lt: endOfDay },
@@ -28,7 +27,7 @@ const sendReminders = async () => {
       return;
     }
 
-    console.log('Tasks found for reminder:', tasks);
+    console.log('Tasks found for reminder:', tasks.length);
 
     // Process each task
     await Promise.all(tasks.map(async (task) => {
