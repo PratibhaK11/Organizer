@@ -1,3 +1,4 @@
+// Convert a base64 string to a Uint8Array
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -9,23 +10,30 @@ const urlBase64ToUint8Array = (base64String) => {
   return outputArray;
 };
 
+// Subscribe the user to push notifications
 export const subscribeUser = async () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
     try {
+      // Ensure service worker is ready
       const registration = await navigator.serviceWorker.ready;
+      
+      // Check if there is an existing subscription
       const existingSubscription = await registration.pushManager.getSubscription();
 
       if (existingSubscription) {
         console.log('User is already subscribed');
-        // Optionally: Send request to update subscription if server-side changes
+        // Optionally: Send request to update subscription if needed
         return;
       }
 
+      // Subscribe the user
+      const applicationServerKey = urlBase64ToUint8Array('BA36MmQvZeXCN6SoOkl5JeSVK0ADziCwPOEINUasNfAGOh10wV3CoqHVx7dZBuYQY4TsC_k578Ro3W4djca2GFs');
       const newSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array('BA36MmQvZeXCN6SoOkl5JeSVK0ADziCwPOEINUasNfAGOh10wV3CoqHVx7dZBuYQY4TsC_k578Ro3W4djca2GFs')
+        applicationServerKey: applicationServerKey
       });
 
+      // Format subscription for server
       const pushSubscription = {
         endpoint: newSubscription.endpoint,
         expirationTime: newSubscription.expirationTime,
@@ -35,6 +43,7 @@ export const subscribeUser = async () => {
         }
       };
 
+      // Send the subscription to your server
       const response = await fetch('/api/notifications/subscribe', {
         method: 'POST',
         body: JSON.stringify({ subscription: pushSubscription }),
@@ -58,7 +67,7 @@ export const subscribeUser = async () => {
   }
 };
 
-
+// Unsubscribe the user from push notifications
 export const unsubscribeUser = async () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
     try {
@@ -68,14 +77,22 @@ export const unsubscribeUser = async () => {
       if (subscription) {
         await subscription.unsubscribe();
 
-        // Notify server to remove subscription
-        await fetch('/api/notifications/unsubscribe', {
+        // Notify the server to remove the subscription
+        const response = await fetch('/api/notifications/unsubscribe', {
           method: 'POST',
           body: JSON.stringify({ endpoint: subscription.endpoint }),
           headers: {
             'Content-Type': 'application/json'
           }
         });
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        console.log('User unsubscribed successfully.');
+      } else {
+        console.log('No subscription found.');
       }
     } catch (error) {
       console.error('Error unsubscribing from push notifications:', error);

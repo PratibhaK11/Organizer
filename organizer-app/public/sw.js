@@ -1,26 +1,31 @@
+// Listen for push events
 self.addEventListener('push', function(event) {
   // Parse the notification payload
-  const data = event.data ? event.data.json() : {};
+  let data = {};
+  try {
+    data = event.data && event.data.text() ? event.data.json() : {};
+  } catch (e) {
+    console.error('Failed to parse push data', e);
+  }
 
   // Define default values
   const title = data.title || 'Default Title';
   const message = data.message || 'Default message';
-  const icon = data.icon || 'path/to/icon.png'; // Optional: Use provided icon or fallback
-  const badge = data.badge || 'path/to/badge.png'; // Optional: Use provided badge or fallback
+  const icon = data.icon || 'path/to/icon.png'; 
+  const badge = data.badge || 'path/to/badge.png'; 
 
   // Prepare options for the notification
   const options = {
     body: message,
     icon: icon,
     badge: badge,
-    // Other notification options can be added here
-    vibrate: [200, 100, 200], // Example vibration pattern
-    tag: 'notification-tag', // Tag to differentiate notifications
+    vibrate: [200, 100, 200], 
+    tag: 'notification-tag', 
     actions: [
       {
         action: 'open_url',
         title: 'Open',
-        icon: 'path/to/open_icon.png' // Optional: Action icon
+        icon: 'path/to/open_icon.png' 
       }
     ]
   };
@@ -33,19 +38,27 @@ self.addEventListener('push', function(event) {
 
 // Handle notification click events
 self.addEventListener('notificationclick', function(event) {
-  // Close the notification
   event.notification.close();
 
   // Handle different actions based on action identifiers
-  if (event.action === 'open_url') {
-    // Open a specific URL when the "Open" action is clicked
-    event.waitUntil(
-      clients.openWindow('http://localhost:3000') // URL to open
-    );
-  } else {
-    // Default action if no specific action is matched
-    event.waitUntil(
-      clients.openWindow('http://localhost:3000') // URL to open
-    );
-  }
+  const urlToOpen = 'http://localhost:3000'; // Default URL
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then(clientList => {
+      for (const client of clientList) {
+        if (client.url === urlToOpen && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
+});
+
+// Handle notification close events (Optional)
+self.addEventListener('notificationclose', function(event) {
+  // You can handle any cleanup or analytics logging here
+  console.log('Notification was closed', event);
 });
