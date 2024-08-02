@@ -19,7 +19,7 @@ const Navbar = ({ tasks, setTasks }) => {
   };
 
   return (
-    <nav className="sticky top-0 left-0 right-0 bg-orangered-800 text-white p-4 flex justify-between items-center shadow-lg z-50">
+    <nav className="sticky top-0 left-0 right-0 bg-orangered text-white p-4 flex justify-between items-center shadow-lg z-50">
       <div className="text-2xl font-semibold">
         <a href="/" className="hover:text-gray-400">Organizer</a>
       </div>
@@ -37,9 +37,9 @@ const Navbar = ({ tasks, setTasks }) => {
             </svg>
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white text-gray-900 border border-gray-300 rounded-lg shadow-lg transition-opacity duration-300">
+            <div className="absolute right-0 mt-2 w-48 bg-black text-white border border-gray-300 rounded-lg shadow-lg transition-opacity duration-300">
               <button
-                className="w-full px-4 py-2 text-left hover:bg-gray-200"
+                className="w-full px-4 py-2 text-left hover:bg-gray-700"
                 onClick={handleLogout}
               >
                 Logout

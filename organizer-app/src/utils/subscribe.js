@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+
 // Convert a base64 string to a Uint8Array
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -21,9 +23,24 @@ export const subscribeUser = async () => {
       const existingSubscription = await registration.pushManager.getSubscription();
 
       if (existingSubscription) {
-        console.log('User is already subscribed');
-        // Optionally: Send request to update subscription if needed
-        return;
+        // Check if the subscription is already stored on the server
+        const response = await fetch('/api/notifications/check-subscription', {
+          method: 'POST',
+          body: JSON.stringify({ endpoint: existingSubscription.endpoint }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+          if (responseData.isSubscribed) {
+            console.log('User is already subscribed');
+            return;
+          }
+        } else {
+          throw new Error(`Server responded with status ${response.status}`);
+        }
       }
 
       // Subscribe the user

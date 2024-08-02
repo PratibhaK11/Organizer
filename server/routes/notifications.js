@@ -6,6 +6,24 @@ const { ensureAuthenticated } = require('../config/auth');
 
 router.use(ensureAuthenticated);
 
+// Check Subscription Route
+router.post('/check-subscription', async (req, res) => {
+  const { endpoint } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (user && user.subscription && user.subscription.endpoint === endpoint) {
+      res.status(200).json({ isSubscribed: true });
+    } else {
+      res.status(200).json({ isSubscribed: false });
+    }
+  } catch (error) {
+    console.error('Error checking subscription:', error);
+    res.status(500).json({ error: 'Failed to check subscription' });
+  }
+});
+
 // Subscribe Route
 router.post('/subscribe', async (req, res) => {
   const { subscription } = req.body;

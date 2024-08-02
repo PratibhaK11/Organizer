@@ -105,7 +105,7 @@ const Tasks = () => {
 
       <div className="flex flex-col lg:flex-row flex-1">
         {/* Task Form Section */}
-        <div className="flex-1 p-6 bg-gray-100 lg:mr-6 lg:mb-0 mb-6">
+        <div className="flex-1 p-4 lg:p-6 bg-white lg:mr-6 lg:mb-0 mb-6">
           <TaskForm 
             setTasks={setTasks} 
             editingTask={editingTask} 
@@ -114,18 +114,18 @@ const Tasks = () => {
         </div>
 
         {/* Tasks List Section */}
-        <div className="flex-1 p-6 bg-white-200 overflow-y-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold">Tasks</h2>
-            <div className="flex items-center space-x-4">
-              <p className="text-gray-600">
+        <div className="flex-1 p-4 lg:p-6 bg-white overflow-y-auto">
+          <div className="flex justify-between items-center mb-4 lg:mb-6">
+            <h2 className="text-lg lg:text-2xl font-semibold">Tasks</h2>
+            <div className="flex items-center space-x-2 lg:space-x-4">
+              <p className="text-sm lg:text-base text-gray-600">
                 <strong>Pending Tasks:</strong> {filteredTasks.filter(task => task.status === 'Not Started').length}
               </p>
               <button
                 onClick={handleFilterClick}
                 className="flex items-center bg-gray-300 p-2 rounded"
               >
-                <FaFilter className="mr-2" />
+                <FaFilter className="mr-1 lg:mr-2" />
                 {filterPriority === 'all' ? 'High ' : 'Show All' }
               </button>
             </div>
@@ -137,17 +137,17 @@ const Tasks = () => {
             <ul className="space-y-4">
               {filteredTasks.map((task) => (
                 <li key={task._id} className={`border border-gray-300 p-4 rounded-md bg-white shadow-sm ${task.status === 'Completed' ? 'line-through' : ''}`}>
-                  <div className="flex justify-between items-center">
-                    <div>
+                  <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center">
+                    <div className="flex-1 mb-2 lg:mb-0">
                       <h3 className="text-lg font-semibold">{task.title}</h3>
-                      <p className="text-gray-700">{task.description}</p>
-                      <p className="text-gray-600"><strong>Due Date:</strong> {task.dueDate}</p>
-                      <p className="text-gray-600"><strong>Priority:</strong> {task.priority}</p>
-                      <p className="text-gray-600"><strong>Status:</strong> {task.status}</p>
-                      <p className="text-gray-600"><strong>Categories:</strong> {task.categories.join(', ')}</p>
-                      {task.alarm && <p className="text-gray-600"><strong>Alarm Set</strong></p>}
+                      <p className="text-sm lg:text-base text-gray-700">{task.description}</p>
+                      <p className="text-sm lg:text-base text-gray-600"><strong>Due Date:</strong> {task.dueDate}</p>
+                      <p className="text-sm lg:text-base text-gray-600"><strong>Priority:</strong> {task.priority}</p>
+                      <p className="text-sm lg:text-base text-gray-600"><strong>Status:</strong> {task.status}</p>
+                      <p className="text-sm lg:text-base text-gray-600"><strong>Categories:</strong> {task.categories.join(', ')}</p>
+                      {task.alarm && <p className="text-sm lg:text-base text-gray-600"><strong>Alarm Set</strong></p>}
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 mt-2 lg:mt-0">
                       <button
                         onClick={() => markAsCompleted(task._id)}
                         className="bg-green-500 text-white p-2 rounded"
@@ -156,13 +156,13 @@ const Tasks = () => {
                       </button>
                       <button
                         onClick={() => deleteTask(task._id)}
-                        className="bg-orangered-500 text-white p-2 rounded"
+                        className="bg-red-500 text-white p-2 rounded"
                       >
                         <FaTrash />
                       </button>
                       <button
                         onClick={() => handleEditClick(task)}
-                        className="bg-black-500 text-white p-2 rounded"
+                        className="bg-blue-500 text-white p-2 rounded"
                       >
                         <FaEdit />
                       </button>

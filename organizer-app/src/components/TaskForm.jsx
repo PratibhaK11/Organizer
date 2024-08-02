@@ -79,14 +79,14 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-      <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
+    <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">
         {editingTask ? 'Edit Task' : 'New Task'}
       </h2>
       {error && <p className="text-red-500 mb-4">{error}</p>} {/* Display error message */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-col mb-4">
-          <label htmlFor="title" className="font-medium text-gray-700 dark:text-gray-300 mb-2">Title</label>
+          <label htmlFor="title" className="font-medium text-gray-700 mb-2">Title</label>
           <input
             type="text"
             id="title"
@@ -94,40 +94,40 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter task title"
             required
-            className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         <div className="flex flex-col mb-4">
-          <label htmlFor="description" className="font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+          <label htmlFor="description" className="font-medium text-gray-700 mb-2">Description</label>
           <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter task description"
-            className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         <div className="flex gap-4 mb-4">
           <div className="flex-1">
-            <label htmlFor="dueDate" className="font-medium text-gray-700 dark:text-gray-300 mb-2">Due Date</label>
+            <label htmlFor="dueDate" className="font-medium text-gray-700 mb-2">Due Date</label>
             <input
               type="date"
               id="dueDate"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 w-full"
+              className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
             />
           </div>
 
           <div className="flex-1">
-            <label htmlFor="priority" className="font-medium text-gray-700 dark:text-gray-300 mb-2">Priority</label>
+            <label htmlFor="priority" className="font-medium text-gray-700 mb-2">Priority</label>
             <select
               id="priority"
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 w-full"
+              className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -136,12 +136,12 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
           </div>
 
           <div className="flex-1">
-            <label htmlFor="status" className="font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+            <label htmlFor="status" className="font-medium text-gray-700 mb-2">Status</label>
             <select
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 w-full"
+              className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
             >
               <option value="Not Started">Not Started</option>
               <option value="In Progress">In Progress</option>
@@ -151,14 +151,14 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
         </div>
 
         <div className="flex flex-col mb-4">
-          <label htmlFor="categories" className="font-medium text-gray-700 dark:text-gray-300 mb-2">Categories</label>
+          <label htmlFor="categories" className="font-medium text-gray-700 mb-2">Categories</label>
           <input
             type="text"
             id="categories"
             value={categories.join(', ')}
             onChange={(e) => setCategories(e.target.value.split(',').map(cat => cat.trim()).filter(cat => cat))}
             placeholder="Enter categories, separated by commas"
-            className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -168,14 +168,14 @@ const TaskForm = ({ setTasks, editingTask, setEditingTask }) => {
             id="alarm"
             checked={alarm}
             onChange={(e) => setAlarm(e.target.checked)}
-            className="h-5 w-5 text-blue-500 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:ring-offset-gray-800"
+            className="h-5 w-5 text-blue-500 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
           />
-          <label htmlFor="alarm" className="ml-3 text-gray-700 dark:text-gray-300">Set Alarm</label>
+          <label htmlFor="alarm" className="ml-3 text-gray-700">Set Alarm</label>
         </div>
 
         <button
           type="submit"
-          className="w-full py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
+          className="w-full py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {editingTask ? 'Update Task' : 'Add Task'}
         </button>
