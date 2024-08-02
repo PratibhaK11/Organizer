@@ -71,7 +71,7 @@ const sendReminders = async () => {
   }
 };
 
-// Schedule to run every minute
-cron.schedule('* * * * *', sendReminders);
+// Schedule to run every 5 minutes
+cron.schedule('*/5 * * * *', sendReminders);
 
 module.exports = cron;
