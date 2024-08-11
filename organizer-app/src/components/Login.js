@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { subscribeUser } from '../utils/subscribe';
 
 const Login = () => {
-  const { login, user } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -12,11 +12,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If the user is already logged in, redirect them to the tasks page
-    if (user) {
-      navigate('/tasks');
-    }
-
     // Clear cookies when the component mounts
     const clearCookies = async () => {
       try {
@@ -26,27 +21,11 @@ const Login = () => {
       }
     };
     clearCookies();
-  }, [user, navigate]);
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-    return passwordRegex.test(password);
-  };
+  }, []);
 
   const validateForm = () => {
     if (!email || !password) {
       return 'Please enter both email and password';
-    }
-    if (!validateEmail(email)) {
-      return 'Please enter a valid email';
-    }
-    if (!validatePassword(password)) {
-      return 'Password must be at least 6 characters long, contain at least one number, one lowercase and one uppercase letter';
     }
     return '';
   };

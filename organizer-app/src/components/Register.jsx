@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const Register = () => {
-  const { register, user } = useContext(AuthContext);
+  const { register } = useContext(AuthContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,11 +13,6 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If the user is already logged in, redirect them to the tasks page
-    if (user) {
-      navigate('/tasks');
-    }
-
     // Clear cookies when the component mounts
     const clearCookies = async () => {
       try {
@@ -27,30 +22,17 @@ const Register = () => {
       }
     };
     clearCookies();
-  }, [user, navigate]);
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-    return passwordRegex.test(password);
-  };
+  }, []);
 
   const validateForm = () => {
     if (!name || !email || !password || !password2) {
       return 'Please fill in all fields';
     }
-    if (!validateEmail(email)) {
-      return 'Please enter a valid email';
-    }
-    if (!validatePassword(password)) {
-      return 'Password must be at least 6 characters long, contain at least one number, one lowercase and one uppercase letter';
-    }
     if (password !== password2) {
       return 'Passwords do not match';
+    }
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long';
     }
     return '';
   };
@@ -65,7 +47,7 @@ const Register = () => {
     setError('');
     setSuccess('');
     try {
-      await register(name, email, password);
+      await register(name, email, password, password2);
       setSuccess('Registration successful! Redirecting to login...');
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
@@ -140,6 +122,7 @@ const Register = () => {
           >
             Register
           </button>
+
         </form>
         <p className="text-center text-gray-600 mt-6">
           Already have an account?{' '}
