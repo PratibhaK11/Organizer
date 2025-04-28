@@ -1,4 +1,3 @@
-```markdown
 # Organizer
 
 A full-stack task organizer application with user authentication, task management, and push notifications.
@@ -86,7 +85,6 @@ A full-stack task organizer application with user authentication, task managemen
    # Front-end
    cd ../organizer-app
    npm install
-   ```
 
 4. **Run the application**  
    ```bash
